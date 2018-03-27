@@ -1,0 +1,19 @@
+# 属性、状态和复合组件
+
+很多React教程都会指出，属性(props)是只读的，这样讲其实不对，ReactComponent源码中不就包含了setProps和replaceProps两个接口吗？它们就是拿来更新props的。并且，就如同setState一样，调用了setProps同样也会使得组件进行重新渲染。
+
+除了属性，你一定还听说过状态(State)。确切的说，状态是定义在复合组件(ReactCompositeComponent)中，ReactNativeComponent就没有状态一说。
+
+状态和属性，更新时都会触发组件更新，为什么复合组件中既包含了属性、又包含了状态，但ReactNativeComponent组件却又不需要状态呢？
+
+这里简单介绍一下ReactNativeComponent，可以简单理解ReactNativeComponent就是HTML标签元素对应的React组件。每一个HTML标签，在执行完render之后，都会被转化成一个ReactNativeComponent对象。
+
+再来回到这个问题，属性、状态到底有什么区别呢？
+
+区别在于，属性是外部传递，状态是内部变化。组件的初始化函数construct，接受的第一个传参就是props，props一般都是外部传递进来的值，但在复合组件初始化时，并不会传递状态。父组件可以通过传递不同的props给子组件，使得子组件发生更新。
+
+理清了属性和状态的区别，这时你就能理解，为什么ReactNativeComponent不需要状态。因为ReactNativeComponent就是对应了一个HTML元素，HTML元素只需要通过属性就能表示其数据信息，并不会发生状态变化，而复合组件是用户自定义的，有可能存在复杂的内部状态变迁，因此状态被定义在ReactCompositeComponent中。
+
+总结一下，当父组件需要更新子组件时，可以直接修改传递给子组件的props，子组件属性发生变化时，就会重新进行渲染。而当组件内部状态发生变化时，直接通过状态更新，就会触发重新渲染。
+
+当然，属性和状态的更新渲染，本质上也是殊途同归的，这就要深入研究setProps和setState引发的更新机制了。

@@ -1,0 +1,14 @@
+# 组件生命周期
+
+不局限在componentWillXXX等回调函数上，完整的过一遍自定义组件实例化过程中各个调用情况。
+
+首先被调用的函数，就是在createClass时返回的wrapper函数了，它新建了一个空对象，并执行了construct方法，而后返回了该实例。构造函数被定义在ReactCompositeComponentMixin中，它显式地调用了ReactComponent.Mixin.construct方法。
+
+而当组件在渲染的过程中，首次渲染时，如果定义了getInitialState，就会被调用并将返回值作为初始的state，同时componentWillMount、render和componentDidMount会先后被调用到。
+
+在组件更新时，则会一次调用componentWillReceiveProps、componentWillUpdate、render和componentDidUpdate。如果定义了shouldeComponentUpdate方法，则它会在componentWillUpdate之前被执行，根据其返回结果，决定是否继续执行componentWillUpdate及后续的调用。
+
+在组件卸载时，将会调用componentWillUnmount，完成卸载操作。
+
+render方法在执行渲染时，总是会被执行，无论时挂载时渲染，还是更新时渲染，除非整个update过程因为shouldeComponentUpdate跳过，这种情况下，组件只会更新props和state的值，而不会重新执行render方法。
+
